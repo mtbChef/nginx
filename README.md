@@ -4,10 +4,10 @@ NGINX (pronounced "engine x" or "en-jin-eks") is the world's most popular Web Se
 
 NGINX is free and open source software, distributed under the terms of a simplified [2-clause BSD-like license](LICENSE).
 
-A commercial version, [NGINX Plus](https://www.f5.com/products/nginx/nginx-plus), with additional enterprise features and support, is available from [F5, Inc](https://www.f5.com/).
+Enterprise distributions, commercial support and training are available from [F5, Inc](https://www.f5.com/products/nginx).
 
 > [!IMPORTANT]
-> The goal of this README is to provide a basic, structured introduction to NGINX for novice users. Please refer to the [full NGINX documentation](https://nginx.org/en/docs/) for detailed information on [installing](https://nginx.org/en/docs/install.html), [building](https://nginx.org/en/docs/configure.html), [configuring](https://nginx.org/en/docs/dirindex.html), [debugging](https://nginx.org/en/docs/debugging_log.html), and so on. These documentation pages also contain a more detailed [Beginners Guide](https://nginx.org/en/docs/beginners_guide.html), How-Tos, [Development guides](https://nginx.org/en/docs/dev/development_guide.html), and a complete module and [directive reference](https://nginx.org/en/docs/dirindex.html).
+> The goal of this README is to provide a basic, structured introduction to NGINX for novice users. Please refer to the [full NGINX documentation](https://nginx.org/en/docs/) for detailed information on [installing](https://nginx.org/en/docs/install.html), [building](https://nginx.org/en/docs/configure.html), [configuring](https://nginx.org/en/docs/dirindex.html), [debugging](https://nginx.org/en/docs/debugging_log.html), and more. These documentation pages also contain a more detailed [Beginners Guide](https://nginx.org/en/docs/beginners_guide.html), How-Tos, [Development guide](https://nginx.org/en/docs/dev/development_guide.html), and a complete module and [directive reference](https://nginx.org/en/docs/dirindex.html).
 
 # Table of contents
 - [How it works](#how-it-works)
@@ -63,11 +63,11 @@ NGINX is highly flexible and configurable. Provisioning the software is achieved
 > The set of directives available to your distribution of NGINX is dependent on which [modules](#modules) have been made available to it.
 
 ## Runtime
-Rather than running in a single, monolithic processes, NGINX is architected to scale beyond OS process stack limitations. To achieve this, the software operates as a collection of processes that include:
+Rather than running in a single, monolithic process, NGINX is architected to scale beyond OS process stack limitations by operating as a collection of processes. They include:
 - A "master" process that maintains worker processes, as well as, reads and evaluates configuration files.
 - One or more "worker" processes that process data (eg. HTTP requests).
 
-By default, the number of [worker processes](https://nginx.org/en/docs/ngx_core_module.html#worker_processes) is set to equal the number of CPU cores on the system. In most cases, this optimally balances load across available system resources, as NGINX is designed to efficiently distribute work across all available worker processes.
+The number of [worker processes](https://nginx.org/en/docs/ngx_core_module.html#worker_processes) is typically set to the number of CPU cores on the system. In most cases, this optimally balances load across available system resources, as NGINX is designed to efficiently distribute work across all available worker processes.
 
 > [!TIP]
 > Processes synchronize data through shared memory. For this reason, many NGINX directives require the allocation of shared memory zones. As an example, when configuring [rate limiting](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html#limit_req), connecting clients must be tracked in a [common memory zone](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html#limit_req_zone) so all worker processes can know how many times a particular client has accessed the server in a span of time.
@@ -76,37 +76,31 @@ By default, the number of [worker processes](https://nginx.org/en/docs/ngx_core_
 Follow these steps to download and install precompiled NGINX binaries. You may also choose to [build the module locally from source code](#building-from-source).
 
 ## Stable and Mainline binaries
-NGINX binaries are built and distributed in two versions: stable and mainline. You'll need to decide which is appropriate for your purposes.
-
-### Mainline builds 
-Contain the latest features and bug fixes and are always up to date. However, they may include experimental modules and/or features which introduce new defects.
-
-### Stable builds
-May not contain all of the latest modules and/or features, but do include all of the latest critical bug and security patches, which are ported from the mainline version. We recommend the stable version for production servers.
+NGINX binaries are built and distributed in two versions: stable and mainline. You'll need to [decide which is appropriate for your purposes](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/#choosing-between-a-stable-or-a-mainline-version).
 
 ## Linux binary installation process
-NGINX binary installation process takes advantage of package managers native to specific Linux distributions. For this reason, first-time installations involve adding the official NGINX package repository to the package manager.
+The NGINX binary installation process takes advantage of package managers native to specific Linux distributions. For this reason, first-time installations involve adding the official NGINX package repository to your system's package manager.
 
 ### GPG keys
 GPG signing keys are used to verify the authenticity of packages. Read more [important details](https://nginx.org/en/linux_packages.html#signatures) on our GPG/PGP keys.
 
 ### Upgrades
-Future upgrades to the latest version can be managed using the same package manager without the need to manually download and authenticate binaries.
+Future upgrades to the latest version can be managed using the same package manager without the need to manually download and verify binaries.
 
 ### Installation instructions
-Once a repository has been added and authenticated, follow [these steps](https://nginx.org/en/linux_packages.html) to install NGINX binaries using the package manager native to your Linux distribution.
+Once a repository has been added and verified, follow [these steps](https://nginx.org/en/linux_packages.html) to install NGINX binaries using the package manager native to your Linux distribution.
 
 ## FreeBSD installation process
 For more information on installing NGINX on FreeBSD system, visit https://nginx.org/en/docs/install.html
 
 ## Windows executables
-Windows executables for mainline and stable versions can be found on the main [NGINX download page](https://nginx.org/en/download.html). Note that the current implementation of NGINX for Windows is at the Proof-of-Concept stage and can only be used for development and testing purposes.
+Windows executables for mainline and stable releases can be found on the main [NGINX download page](https://nginx.org/en/download.html). Note that the current implementation of NGINX for Windows is at the Proof-of-Concept stage and should only be used for development and testing purposes.
 
 ## Dynamic modules
 NGINX version 1.9.11 added support for [Dynamic Modules](https://nginx.org/en/docs/ngx_core_module.html#load_module). Unlike standard, Static modules, which must be complied into NGINX binaries at build-time, Dynamic modules can be downloaded, installed, and configured at any point. [Official dynamic module binaries](https://nginx.org/en/linux_packages.html#dynmodules) are available from the same package repository as the core NGINX binaries described in previous steps.
 
 > [!TIP]
-> [NGINX JavaScript (NJS)](https://github.com/nginx/njs), is a popular NGINX dynamic module that enables the extension of core NGINX functionality using familiar JavaScript syntax.
+> [NGINX JavaScript (njs)](https://github.com/nginx/njs), is a popular NGINX dynamic module that enables the extension of core NGINX functionality using familiar JavaScript syntax.
 
 # Getting started with NGINX
 For a gentle introduction to NGINX basics, please see our [Beginner’s Guide](https://nginx.org/en/docs/beginners_guide.html).
@@ -118,13 +112,13 @@ See [Configuring HTTPS servers](https://nginx.org/en/docs/http/configuring_https
 For a quick start guide on configuring NGINX as a Load Balancer, please see [Using nginx as HTTP load balancer](https://nginx.org/en/docs/http/load_balancing.html).
 
 ## Rate limiting
-See our [Rate Limiting with NGINX](https://blog.nginx.org/blog/rate-limiting-nginx) blog post for an overview of a core concept of provisioning NGINX as an API Gateway.
+See our [Rate Limiting with NGINX](https://blog.nginx.org/blog/rate-limiting-nginx) blog post for an overview of core concepts for provisioning NGINX as an API Gateway.
 
 ## Content caching
 See [A Guide to Caching with NGINX and NGINX Plus](https://blog.nginx.org/blog/nginx-caching-guide) blog post for an overview of how to use NGINX as a content cache (e.g. edge server of a content delivery network).
 
 # Building from source
-The following steps can be used to build NGINX the source code available in this repository.
+The following steps can be used to build NGINX from source code available in this repository.
 
 ## Installing dependencies
 Most Linux distributions will require several dependencies to be installed in order to build NGINX. The following instructions are specific to the `apt` package manager, widely available on most Ubuntu/Debian distributions and their derivatives.
@@ -153,7 +147,6 @@ sudo apt install libpcre3-dev zlib1g-dev
 
 >```bash
 >sudo apt install libssl-dev
->
 
 ## Cloning the NGINX GitHub repository
 Using your preferred method, clone the NGINX repository into your development directory. See [Cloning a GitHub Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) for additional help.
@@ -175,7 +168,7 @@ auto/configure
 > Configuring the build without any flags will compile NGINX with the minimal set of options. Please refer to https://nginx.org/en/docs/configure.html for a full list of available build configuration options.
 
 ## Compiling
-The `configure` script will generate a `Makefile` in the NGINX source root directory upon successful execution. The compile NGINX into a binary, issue the following command from that same directory:
+The `configure` script will generate a `Makefile` in the NGINX source root directory upon successful execution. To compile NGINX into a binary, issue the following command from that same directory:
 
 ```bash
 make
@@ -222,7 +215,7 @@ A [complete list of available Linux packages](https://nginx.org/en/linux_package
 See [Tested OS Platforms](https://nginx.org/en/#tested_os_and_platforms) for a  list of operating systems that NGINX is confirmed to run on.
 
 ## Windows 
-Windows support is tested on Windows XP, Windows Server 2003, Windows 7, Windows 10. [Windows executables](https://nginx.org/en/download.html) can be found on the download page. Note that the current implementation of NGINX for Windows is at the Proof-of-Concept stage and can only be used for development and testing purposes.
+Windows support is tested on Windows XP, Windows Server 2003, Windows 7, Windows 10. [Windows executables](https://nginx.org/en/download.html) can be found on the download page. Note that the current implementation of NGINX for Windows is at the Proof-of-Concept stage and should only be used for development and testing purposes.
 
 ## Supported deployment environments
 - Container
@@ -232,7 +225,7 @@ Windows support is tested on Windows XP, Windows Server 2003, Windows 7, Windows
 # Asking questions and reporting issues
 We encourage you to engage with us.
 - [NGINX GitHub Discussions](https://github.com/nginx/nginx/discussions), is the go-to place to start asking questions and sharing your thoughts.
-- Our [GitHub Issues](https://github.com/nginx/nginx/issues) page offers space to submit and discuss specific issues
+- Our [GitHub Issues](https://github.com/nginx/nginx/issues) page offers space to submit and discuss specific issues, report bugs, and suggest enhancements.
 
 # Contributing code 
 Please see the [Contributing](CONTRIBUTING.md) guide for information on how to contribute code.
@@ -249,6 +242,3 @@ See our [changelog](https://nginx.org/en/CHANGES) to keep track of updates.
 
 ---
 Additional documentation available at: https://nginx.org/en/docs
-
-©2024 F5, Inc. All rights reserved.
-https://www.f5.com/products/nginx
